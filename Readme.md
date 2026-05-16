@@ -59,8 +59,22 @@ Perubahan utamanya dilakukan di sisi server. Alih-alih hanya melakukan *broadcas
 
 ### Experiment 3.1: Original code
 
-![Experiment 2.3](assets/experiment-3-1.png)
+![Experiment 3.1](assets/experiment-3-1.png)
 
 **Explanation:**
 Pada eksperimen ini, saya mengimplementasikan aplikasi WebChat menggunakan *framework* Yew untuk sisi *client* dan Node.js untuk sisi WebSocket *server*. Setelah mengkloning repositori *server* dan menjalankannya dengan `npm start`, saya mengkloning repositori *client*. Saya kemudian menyesuaikan versi `wasm-bindgen` agar kompatibel dengan versi Rust saat ini dan menjalankannya menggunakan `npm start` (yang otomatis memanggil `wasm-pack` dan `webpack`).
 Saat saya membuka beberapa *tab browser* secara bersamaan (mensimulasikan *multiple clients*), antarmuka WebChat berhasil dirender. Pesan yang dikirimkan dari satu *tab* berhasil diteruskan ke server dan di-*broadcast* kembali sehingga muncul di *tab* lainnya secara *real-time*. Ini membuktikan bahwa arsitektur *event-driven* dapat diterapkan untuk membangun sistem *chat* interaktif di ekosistem web dengan WebAssembly.
+
+---
+
+### Experiment 3.2: Be Creative!
+
+![Experiment 3.2](assets/experiment-3-2.png)
+
+**Explanation:**
+
+Modifikasi yang saya lakukan meliputi:
+
+1. **Perubahan Tema Warna:** Mengganti skema warna bawaan menjadi tema bernuansa *rose/pink* (menggunakan *class* seperti `bg-rose-100`, `bg-rose-50`, dan `text-rose-800`).
+2. **Halaman Login:** Menambahkan judul utama "✨ My Messenger ✨" dan mengubah *placeholder* input menjadi lebih interaktif ("Who are you? (e.g. Tsaniya)"). Tombol *submit* juga dimodifikasi dengan warna `bg-rose-500` dan efek transisi saat di-*hover*.
+3. **Halaman Chat:** Memperbarui *header* ruang obrolan menjadi "☕ The Chat Room", serta membuat *bubble chat* terlihat lebih modern dengan lengkungan (`rounded-2xl`) dan bayangan (`shadow-sm`).
