@@ -54,3 +54,13 @@ Iya, program ini masih menggunakan protokol WebSocket yang sama. Protokol ini di
 **Explanation:**
 Pada eksperimen ini, saya melakukan modifikasi kecil pada `server.rs` dan `client.rs` agar setiap pesan yang diterima oleh *client* menyertakan informasi IP dan Port pengirimnya.
 Perubahan utamanya dilakukan di sisi server. Alih-alih hanya melakukan *broadcast* variabel `text` mentah, saya menggunakan makro `format!` untuk menggabungkan variabel `addr` (berisi IP dan Port pengirim) dengan pesan `text` menjadi `format!("{}: {}", addr, text)`. Saya melakukan modifikasi ini di sisi server agar pemrosesan/pemformatan string hanya dilakukan satu kali di pusat, sehingga semua *client* yang menerima *broadcast* sudah langsung mendapatkan format pesan yang utuh dan seragam tanpa perlu mengubah banyak logika di sisi *client*. Selain itu, pada file *client*, saya memodifikasi blok `println!` agar menambahkan identifier "Tsaniya's Computer" sesuai dengan contoh di modul.
+
+---
+
+### Experiment 3.1: Original code
+
+![Experiment 2.3](assets/experiment-3-1.png)
+
+**Explanation:**
+Pada eksperimen ini, saya mengimplementasikan aplikasi WebChat menggunakan *framework* Yew untuk sisi *client* dan Node.js untuk sisi WebSocket *server*. Setelah mengkloning repositori *server* dan menjalankannya dengan `npm start`, saya mengkloning repositori *client*. Saya kemudian menyesuaikan versi `wasm-bindgen` agar kompatibel dengan versi Rust saat ini dan menjalankannya menggunakan `npm start` (yang otomatis memanggil `wasm-pack` dan `webpack`).
+Saat saya membuka beberapa *tab browser* secara bersamaan (mensimulasikan *multiple clients*), antarmuka WebChat berhasil dirender. Pesan yang dikirimkan dari satu *tab* berhasil diteruskan ke server dan di-*broadcast* kembali sehingga muncul di *tab* lainnya secara *real-time*. Ini membuktikan bahwa arsitektur *event-driven* dapat diterapkan untuk membangun sistem *chat* interaktif di ekosistem web dengan WebAssembly.
