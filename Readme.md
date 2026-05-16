@@ -78,3 +78,27 @@ Modifikasi yang saya lakukan meliputi:
 1. **Perubahan Tema Warna:** Mengganti skema warna bawaan menjadi tema bernuansa *rose/pink* (menggunakan *class* seperti `bg-rose-100`, `bg-rose-50`, dan `text-rose-800`).
 2. **Halaman Login:** Menambahkan judul utama "✨ My Messenger ✨" dan mengubah *placeholder* input menjadi lebih interaktif ("Who are you? (e.g. Tsaniya)"). Tombol *submit* juga dimodifikasi dengan warna `bg-rose-500` dan efek transisi saat di-*hover*.
 3. **Halaman Chat:** Memperbarui *header* ruang obrolan menjadi "☕ The Chat Room", serta membuat *bubble chat* terlihat lebih modern dengan lengkungan (`rounded-2xl`) dan bayangan (`shadow-sm`).
+
+---
+
+### Bonus: Rust Websocket server for YewChat!
+
+![Bonus](assets/bonus.png)
+
+**Explanation of How I Did It:**
+
+Untuk membuat server Rust dari Tutorial 2 kompatibel dengan client Yew dari Tutorial 3, server perlu menangani string berformat JSON daripada plain text.
+
+1. Saya menambahkan `serde` dan `serde_json` ke `Cargo.toml` untuk melakukan serialisasi dan deserialisasi pesan.
+2. Saya mendefinisikan struct/enum `WebSocketMessage`, `MessageData`, dan `MsgTypes` di Rust untuk mencerminkan struktur JSON yang diharapkan oleh client Yew.
+3. Saya mengimplementasikan pelacakan state pengguna yang thread-safe menggunakan `Arc<Mutex<HashMap<SocketAddr, String>>>`. Ketika client mengirim pesan `Register`, server menyimpan username mereka dan mem-broadcast pesan `Users` yang berisi daftar pengguna aktif yang telah diperbarui.
+4. Ketika server menerima tipe `Message`, server melampirkan username pengirim dari state, melakukan serialisasi kembali ke JSON, dan mem-broadcast-nya ke semua client yang terhubung.
+
+**Why It Is a Successful Change:**
+
+Perubahan ini berhasil karena protokol WebSocket bersifat language-agnostic. Protokol ini hanya mengirimkan data (dalam hal ini, string teks mentah). Selama server Rust dapat mengurai string JSON yang masuk dan mengirim kembali string JSON yang terstruktur dengan benar sesuai ekspektasi client Yew WebAssembly, keduanya dapat berkomunikasi dengan sempurna. Client Yew tidak mengetahui atau peduli apakah backend ditulis dalam JavaScript/Node.js atau Rust/Tokio.
+
+**My Opinion: JavaScript vs. Rust Version**
+
+- **JavaScript (Node.js):** Menurut saya versi JS jauh lebih cepat untuk prototyping. Karena JSON bersifat native di JavaScript, kita tidak perlu mendefinisikan struct yang ketat atau menggunakan crate pihak ketiga untuk mengurai pesan. Sangat mudah dan langsung.
+- **Rust (Tokio):** Saya lebih menyukai versi Rust untuk produksi dan skalabilitas. Meskipun pengaturan awalnya lebih kompleks (memerlukan `serde` dan definisi tipe yang ketat), strong typing milik Rust mencegah runtime error. Selain itu, memory safety Rust dan model asinkron Tokio membuatnya jauh lebih efisien dan aman ketika menangani ribuan koneksi WebSocket secara bersamaan dibandingkan Node.js.
