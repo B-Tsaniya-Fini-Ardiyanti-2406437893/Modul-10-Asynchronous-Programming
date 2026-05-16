@@ -22,7 +22,9 @@ async fn handle_connection(
                     Some(Ok(msg)) => {
                         if let Some(text) = msg.as_text() {
                             println!("From client {addr:?} {text:?}");
-                            bcast_tx.send(text.to_string())?;
+                            
+                            let bcast_msg = format!("{}: {}", addr, text);
+                            bcast_tx.send(bcast_msg)?;
                         }
                     }
                     Some(Err(err)) => return Err(err.into()),

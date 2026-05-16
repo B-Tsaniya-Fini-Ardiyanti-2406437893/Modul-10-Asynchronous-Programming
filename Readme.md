@@ -26,7 +26,7 @@ Ketika baris `drop(spawner)` dihapus atau di- *comment*, *executor* tidak pernah
 
 ### Experiment 2.1: Original code of broadcast chat
 
-![Experiment 2.1 With Drop](assets/experiment-2-1.png)
+![Experiment 2.1](assets/experiment-2-1.png)
 
 **How to run it and what happens:**
 Untuk menjalankan aplikasi *chat* ini, saya membuka satu terminal untuk menjalankan server dengan perintah `cargo run --bin server`. Setelah server berjalan di port 2000, saya membuka tiga terminal lain untuk menjalankan client dengan perintah `cargo run --bin client`.
@@ -44,3 +44,13 @@ Untuk mengubah port aplikasi *chat* ini, saya perlu melakukan perubahan di dua s
 
 **Is it also using the same websocket protocol? Where is it defined?**
 Iya, program ini masih menggunakan protokol WebSocket yang sama. Protokol ini didefinisikan secara eksplisit di file **client** pada bagian URI: `"ws://127.0.0.1:8080"`. Skema `ws://` di depan IP address tersebut adalah penanda baku (*scheme*) bahwa koneksi yang diminta menggunakan protokol WebSocket (bukan HTTP biasa). Sedangkan di sisi **server**, penggunaan protokol WebSocket terjadi secara implisit ketika koneksi TCP stream biasa dibungkus (*wrapped*) dan di-*upgrade* menjadi WebSocket menggunakan pemanggilan fungsi `ServerBuilder::new().accept(socket)`.
+
+---
+
+### Experiment 2.3: Small changes, add IP and Port
+
+![Experiment 2.3](assets/experiment-2-3.png)
+
+**Explanation:**
+Pada eksperimen ini, saya melakukan modifikasi kecil pada `server.rs` dan `client.rs` agar setiap pesan yang diterima oleh *client* menyertakan informasi IP dan Port pengirimnya.
+Perubahan utamanya dilakukan di sisi server. Alih-alih hanya melakukan *broadcast* variabel `text` mentah, saya menggunakan makro `format!` untuk menggabungkan variabel `addr` (berisi IP dan Port pengirim) dengan pesan `text` menjadi `format!("{}: {}", addr, text)`. Saya melakukan modifikasi ini di sisi server agar pemrosesan/pemformatan string hanya dilakukan satu kali di pusat, sehingga semua *client* yang menerima *broadcast* sudah langsung mendapatkan format pesan yang utuh dan seragam tanpa perlu mengubah banyak logika di sisi *client*. Selain itu, pada file *client*, saya memodifikasi blok `println!` agar menambahkan identifier "Tsaniya's Computer" sesuai dengan contoh di modul.
